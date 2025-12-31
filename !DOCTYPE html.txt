@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dümen Trabzon 2008 | Bağımsız Dijital Sanat Arşivi</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --trabzon-red: #8B0000;
+            --deep-black: #000000;
+            --luxury-gold: #D4AF37;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --soft-radius: 60px; /* Yumuşak Köşeler */
+            --ae-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--deep-black);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- ARKA PLAN MOTORU --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        /* --- SABİT DT LOGOSU --- */
+        .premium-logo {
+            position: fixed;
+            top: 35px;
+            left: 45px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 18px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.4);
+            transition: transform 0.6s var(--ae-ease), border-color 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .premium-logo:hover {
+            transform: scale(1.15) rotate(-2deg);
+            border-color: var(--luxury-gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .premium-logo span {
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: -3px;
+            background: linear-gradient(135deg, #fff 40%, var(--luxury-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+        }
+
+        /* --- YUMUŞAK CAM PANELLER --- */
+        .soft-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--soft-radius);
+            padding: 80px;
+            margin-bottom: 80px;
+            position: relative;
+            transition: transform 0.8s var(--ae-ease), border-color 0.4s ease;
+        }
+
+        .soft-section:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+
+        /* --- TİPOGRAFİ --- */
+        h1, h2, h3 {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            line-height: 0.8;
+            background: linear-gradient(135deg, #fff 20%, var(--luxury-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .ae-text {
+            display: inline-block;
+            transition: transform 0.5s var(--ae-ease);
+            cursor: default;
+        }
+
+        .ae-text:hover {
+            transform: scale(1.12);
+            color: var(--luxury-gold);
+        }
+
+        p {
+            font-weight: 300;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.85;
+        }
+
+        /* --- SÜZÜLME ANİMASYONLARI --- */
+        .float-anim {
+            animation: floatMove 7s ease-in-out infinite;
+        }
+
+        @keyframes floatMove {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-25px) rotate(1deg); }
+            66% { transform: translateY(-12px) rotate(-1deg); }
+        }
+
+        /* --- SOSYAL BUTONLAR --- */
+        .social-grid {
+            display: flex;
+            gap: 25px;
+            margin-top: 50px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .soft-btn {
+            width: 75px;
+            height: 75px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: transform 0.6s var(--ae-ease), background 0.4s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .soft-btn:hover {
+            background: var(--luxury-gold);
+            color: var(--deep-black);
+            transform: translateY(-20px) scale(1.2) rotate(12deg);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        /* --- YÜKLENİYOR EKRANI --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--deep-black);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+            font-size: 4rem;
+            color: var(--luxury-gold);
+            letter-spacing: -5px;
+        }
+
+        main {
+            padding: 200px 24px 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .reveal { opacity: 0; transform: translateY(80px); }
+
+        footer {
+            padding: 100px 24px 60px;
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .premium-logo { left: 20px; top: 20px; padding: 12px 20px; }
+            .soft-section { padding: 40px; border-radius: 40px; }
+            .hero-title { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="loader">DT</div>
+
+    <div class="premium-logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <span>DT</span>
+    </div>
+
+    <main>
+        <div class="float-anim" style="margin-bottom: 120px; text-align: center;">
+            <h1 class="hero-title reveal ae-text">DÜMEN TRABZON 2008</h1>
+            <p class="reveal ae-text" style="letter-spacing: 15px; font-weight: 100; opacity: 0.6; text-transform: uppercase;">Trabzonspor'un Underrated Sayfası</p>
+        </div>
+
+        <section id="welcome" class="soft-section reveal float-anim" style="animation-delay: 0.4s;">
+            <h2 class="ae-text" style="color: var(--luxury-gold); font-size: 3rem;">HOŞ GELDİN</h2>
+            <p class="ae-text">
+                Nostaljik video ve gönderinin tek adresi <span style="font-weight: 800; color: #fff;">DÜMEN TRABZON</span>'a ayak bastın. 
+                Burası, bir tutkunun 2023'den bu yana görsel sanata dönüştüğü yer. Her karede yaratıcılığın ve emeğin izini taşıyoruz.
+            </p>
+        </section>
+
+        <section id="about" class="soft-section reveal float-anim" style="animation-delay: 0.8s;">
+            <h2 class="ae-text" style="color: var(--luxury-gold); font-size: 3rem;">HAKKIMIZDA</h2>
+            <p class="ae-text" style="margin-bottom: 40px;">
+                Bu sayfanın temelleri, 2023 yılında bağımsız bir edit merakının dijital sanata dönüştüğü o anlarda atıldı. 
+                DÜMEN TRABZON, hiçbir spor kulübü veya resmi kuruluşla bağlantısı olmayan, tasarım odaklı kişisel bir projedir.
+            </p>
+            <div style="background: rgba(139, 0, 0, 0.12); padding: 50px; border-radius: 45px; border: 1px solid rgba(255,255,255,0.06);" class="ae-text">
+                <h3 style="font-size: 1.1rem; color: var(--luxury-gold); margin-bottom: 20px; letter-spacing: 4px;">BİYOGRAFİ</h3>
+                <p style="font-size: 1.4rem; font-weight: 400; font-style: italic;">
+                    Karadeniz Fırtınası'nın Dijital Arşivi ve Kaliteli İçerik Merkezi. DÜMEN TRABZON 2008, Trabzonspor camiasına adanmış, en yüksek kalitede görsel ve video içerikleri sunan bağımsız bir platformdur.
+                </p>
+            </div>
+        </section>
+
+        <div style="text-align: center; margin: 120px 0 60px;">
+            <h2 class="hero-title reveal ae-text" style="font-size: 4.5rem;">EKOSİSTEM</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px;">
+            <section class="soft-section reveal hover-scale float-anim" style="animation-delay: 0.2s; margin-bottom: 0;">
+                <h3 class="ae-text" style="color: var(--luxury-gold); font-size: 2.2rem;">PREME YAZILIM</h3>
+                <p class="ae-text" style="opacity: 0.7; margin-bottom: 35px;">
+                    Dijital dünyada güvenlik ve bilinç oluşturma projesi. Siber tehditlere karşı pratik çözümler ve ileri seviye yazılım mimarileri geliştirme odağı.
+                </p>
+                <div class="social-grid" style="justify-content: flex-start;">
+                    <a href="https://www.instagram.com/premeyzlm?igsh=MTI4YnE3c2VhZXIwcw==" target="_blank" class="soft-btn">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@premeyzlm" target="_blank" class="soft-btn">
+                        <i data-lucide="music-2"></i>
+                    </a>
+                    <a href="https://sites.google.com/view/kalvinspace2/ekip" target="_blank" class="soft-btn">
+                        <i data-lucide="globe"></i>
+                    </a>
+                </div>
+            </section>
+
+            <section class="soft-section reveal hover-scale float-anim" style="animation-delay: 0.4s; margin-bottom: 0;">
+                <h3 class="ae-text" style="color: var(--luxury-gold); font-size: 2.2rem;">KASKETİN FIRTINASI</h3>
+                <p class="ae-text" style="opacity: 0.7; margin-bottom: 35px;">
+                    Karadeniz’in hırçın dalgalarından esinlenen, Trabzonspor’un mücadelesini dijital kurguyla birleştiren devasa arşiv. Dümen Trabzon ekosisteminin parçası.
+                </p>
+                <div class="social-grid" style="justify-content: flex-start;">
+                    <a href="https://www.instagram.com/kasketinfirtinasi?igsh=ODA1YjhpY3BodnVh" target="_blank" class="soft-btn">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@kasketinfirtinasi" target="_blank" class="soft-btn">
+                        <i data-lucide="music-2"></i>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <section id="social" style="text-align: center; padding-top: 150px;">
+            <h2 class="reveal ae-text" style="color: var(--luxury-gold); font-size: 4rem; margin-bottom: 80px;">SOSYAL HUB</h2>
+            
+            <div class="reveal float-anim" style="margin-bottom: 100px;">
+                <p class="ae-text" style="font-weight: 800; letter-spacing: 8px; opacity: 0.5; margin-bottom: 30px;">DÜMEN GRUP</p>
+                <div class="social-grid">
+                    <a href="https://www.instagram.com/dumengrupofficial?igsh=MXFjczRjamJwcDM4aw==" target="_blank" class="soft-btn">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@dmengrupofficial" target="_blank" class="soft-btn">
+                        <i data-lucide="music-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="reveal float-anim" style="animation-delay: 1.2s;">
+                <p class="ae-text" style="font-weight: 800; letter-spacing: 8px; opacity: 0.5; margin-bottom: 30px;">DÜMEN TRABZON 2008</p>
+                <div class="social-grid">
+                    <a href="https://www.instagram.com/dtrabzon2008?igsh=eWFnZjNnbXU2ZDZx" target="_blank" class="soft-btn">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="https://x.com/DumenT2008" target="_blank" class="soft-btn">
+                        <i data-lucide="twitter"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@dtrabzon2008" target="_blank" class="soft-btn">
+                        <i data-lucide="music-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="legal" class="reveal" style="padding-top: 120px;">
+            <div class="soft-section" style="border-radius: 80px;">
+                <div style="margin-bottom: 60px;">
+                    <h4 class="ae-text" style="color: var(--luxury-gold); font-size: 1.4rem; margin-bottom: 25px;">YASAL UYARI</h4>
+                    <p class="ae-text" style="font-size: 1rem; opacity: 0.6;">
+                        DÜMEN TRABZON 2008, Trabzonspor Kulübü veya iştirakleriyle hiçbir resmi bağı bulunmayan, bağımsız bir oluşumdur. 
+                        Sayfada yer alan tüm video editleri ve görsel tasarımlar tarafımıza aittir. İçeriklerin izinsiz kullanılması kesinlikle yasaktır; 
+                        ancak kaynak gösterilerek ve izin alınarak paylaşılabilir.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="ae-text" style="color: var(--luxury-gold); font-size: 1.4rem; margin-bottom: 25px;">GİZLİLİK POLİTİKASI</h4>
+                    <p class="ae-text" style="font-size: 1rem; opacity: 0.6;">
+                        Bu web sitesi, kullanıcıların kişisel verilerini hiçbir şekilde toplamaz, işlemez veya üçüncü taraflarla paylaşmaz. 
+                        Tamamen görsel sunum ve portfolyo amaçlı bir platformdur. Kullanıcı deneyimi anonimdir.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="copyright">© Copyright 2024 DÜMEN TRABZON 2008 - Mert Enes Yavuz. Tüm Hakları Saklıdır.</p>
+    </footer>
+
+    <script>
+        // İkonları Oluştur
+        lucide.createIcons();
+
+        // Yükleme Animasyonu
+        window.addEventListener('load', () => {
+            gsap.to("#loader", { 
+                opacity: 0, 
+                duration: 1.2, 
+                ease: "power2.inOut",
+                onComplete: () => {
+                    document.getElementById('loader').style.display = 'none';
+                    initGSAPAnimations();
+                } 
+            });
+        });
+
+        function initGSAPAnimations() {
+            gsap.utils.toArray('.reveal').forEach((el, i) => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 95%",
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 2,
+                    ease: "power4.out",
+                    delay: i * 0.12
+                });
+            });
+        }
+
+        // --- THREE.JS INTERACTIVE ENGINE (SIVI + 4D YILDIZ) ---
+        const canvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // --- AKIŞKAN SIVI EFEKTİ (Mouse Takipli) ---
+        const fluidUniforms = {
+            u_time: { value: 0 },
+            u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+            u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+            u_velocity: { value: 0.0 }
+        };
+
+        const fluidMaterial = new THREE.ShaderMaterial({
+            uniforms: fluidUniforms,
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                precision highp float;
+                uniform float u_time;
+                uniform vec2 u_resolution;
+                uniform vec2 u_mouse;
+                uniform float u_velocity;
+                varying vec2 vUv;
+
+                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+                float noise(vec2 p) {
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    f = f*f*(3.0-2.0*f);
+                    return mix(mix(hash(i+vec2(0,0)), hash(i+vec2(1,0)), f.x),
+                               mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y);
+                }
+
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                    float aspect = u_resolution.x / u_resolution.y;
+                    uv.x *= aspect;
+                    
+                    vec2 mouse = u_mouse;
+                    mouse.x *= aspect;
+
+                    // Liquid Flow
+                    float n = noise(uv * 2.0 + u_time * 0.12);
+                    n += 0.5 * noise(uv * 4.0 - u_time * 0.08);
+                    
+                    // Mouse Dragging Effect
+                    float dist = distance(uv, mouse);
+                    float ripple = smoothstep(0.4 + u_velocity, 0.0, dist);
+                    n += ripple * 0.35;
+
+                    vec3 black = vec3(0.0, 0.0, 0.0);
+                    vec3 darkRed = vec3(0.3, 0.0, 0.0);
+                    vec3 bloodRed = vec3(0.54, 0.0, 0.0);
+                    vec3 luxuryGold = vec3(0.83, 0.69, 0.22);
+
+                    vec3 color = mix(black, darkRed, n);
+                    color = mix(color, bloodRed, ripple * 0.6);
+                    
+                    if(n > 0.88) color = mix(color, luxuryGold, (n - 0.88) * 0.3);
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        });
+
+        const bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), fluidMaterial);
+        scene.add(bgPlane);
+
+        // --- 4D DÖNEN YILDIZ ---
+        const starGeom = new THREE.IcosahedronGeometry(2.5, 1);
+        const pos = starGeom.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+            const x = pos.getX(i);
+            const y = pos.getY(i);
+            const z = pos.getZ(i);
+            const mag = Math.sqrt(x*x + y*y + z*z);
+            if(mag > 2.0) {
+                pos.setXYZ(i, x * 1.1, y * 1.1, z * 1.1);
+            }
+        }
+        
+        const starMaterial = new THREE.MeshStandardMaterial({
+            color: 0x8B0000,
+            metalness: 0.9,
+            roughness: 0.1,
+            emissive: 0x330000,
+            flatShading: true,
+            transparent: true,
+            opacity: 0.4
+        });
+
+        const star = new THREE.Mesh(starGeom, starMaterial);
+        star.position.z = -1;
+        scene.add(star);
+
+        const light = new THREE.Di
